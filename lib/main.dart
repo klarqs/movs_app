@@ -1,4 +1,12 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:tmdb_api/tmdb_api.dart';
+
+import 'dart:convert';
 
 void main() {
   runApp(const MyApp());
@@ -11,105 +19,469 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      title: 'Movies App',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const Home(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+class Splash extends StatelessWidget {
+  const Splash({Key? key}) : super(key: key);
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  Widget build(BuildContext context) {
+    return Container();
+  }
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class Home extends StatefulWidget {
+  const Home({Key? key}) : super(key: key);
 
-  void _incrementCounter() {
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  final Color primaryColor = const Color(0XFF0D0F14);
+  // int _currentTrendingMovieIndex = 0;
+  late Timer _timer;
+  bool isIncrementing = true;
+  List trendingMovies = [];
+  List topRated = [];
+  final String apiKey = 'eba28ba66161c0c71a3d57eb9e73b53f',
+      accessToken =
+          'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlYmEyOGJhNjYxNjFjMGM3MWEzZDU3ZWI5ZTczYjUzZiIsInN1YiI6IjYyMjcxNzRkMDllZDhmMDA1ZTVhNzdlNyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.yHNNLZHPvkmNJePtg3ZUNHCqlrkV13w1p9_-KzK_VOI';
+  PageController pageController = PageController(
+    viewportFraction: .58,
+    initialPage: 0,
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    loadTrendingMovies();
+    // _timer = Timer.periodic(const Duration(seconds: 2), (Timer timer) {
+    //   if (_currentTrendingMovieIndex < (trendingMovies.length - 1) &&
+    //       isIncrementing == true) {
+    //     _currentTrendingMovieIndex++;
+    //     if (_currentTrendingMovieIndex == trendingMovies.length - 1) {
+    //       isIncrementing = false;
+    //     }
+    //   } else if (_currentTrendingMovieIndex > 0 && isIncrementing == false) {
+    //     _currentTrendingMovieIndex--;
+    //     if (_currentTrendingMovieIndex == 0) {
+    //       isIncrementing = true;
+    //     }
+    //   }
+    //   pageController.animateToPage(
+    //     _currentTrendingMovieIndex,
+    //     duration: const Duration(milliseconds: 350),
+    //     curve: Curves.easeIn,
+    //   );
+    // });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _timer.cancel();
+  }
+
+  loadTrendingMovies() async {
+    TMDB tmdb = TMDB(
+      ApiKeys(apiKey, accessToken),
+      logConfig: const ConfigLogger(
+        showLogs: true,
+        showErrorLogs: true,
+      ),
+    );
+    Map trendingMoviesResult = (await tmdb.v3.trending.getTrending());
+    Map topRatedResult = (await tmdb.v3.tv.getTopRated());
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+      trendingMovies = trendingMoviesResult['results'];
+      topRated = topRatedResult['results'];
     });
+    if (kDebugMode) {
+      print(trendingMovies);
+      print(topRated);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+      backgroundColor: primaryColor,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              // Column(
+              //   crossAxisAlignment: CrossAxisAlignment.start,
+              //   children: [
+              //     Padding(
+              //       padding: const EdgeInsets.only(left: 18.0),
+              //       child: Text(
+              //         'Top Rated',
+              //         style: GoogleFonts.dmSans(
+              //           fontSize: 24,
+              //           fontWeight: FontWeight.normal,
+              //           letterSpacing: -.2,
+              //           color: Colors.white,
+              //         ),
+              //       ),
+              //     ),
+              //     const SizedBox(height: 18),
+              //     SizedBox(
+              //       height: MediaQuery.of(context).size.height * .350,
+              //       child: PageView.builder(
+              //         itemCount: topRated.length,
+              //         controller: pageController,
+              //         allowImplicitScrolling: true,
+              //         itemBuilder: (BuildContext context, int index) {
+              //           return trendingMoviesCard(
+              //               image: topRated[index]['backdrop_path'] ?? '',
+              //               title: topRated[index]['title'] ??
+              //                   topRated[index]['name'] ??
+              //                   topRated[index]['original_title'] ??
+              //                   topRated[index]['original_name'] ??
+              //                   '',
+              //               ageRange: topRated[index]['adult'] == false
+              //                   ? "13 +"
+              //                   : "18 +",
+              //               movieType: 'Action',
+              //               rating: topRated[index]['vote_average']);
+              //         },
+              //       ),
+              //     ),
+              //   ],
+              // ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 18.0),
+                    child: Text(
+                      'Trending Now',
+                      style: GoogleFonts.dmSans(
+                        fontSize: 24,
+                        fontWeight: FontWeight.normal,
+                        letterSpacing: -.2,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 18),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * .555,
+                    child: ListView.builder(
+                      itemCount: trendingMovies.length,
+                      controller: pageController,
+                      scrollDirection: Axis.horizontal,
+                      physics: const ScrollPhysics(),
+                      // allowImplicitScrolling: true,
+                      itemBuilder: (BuildContext context, int index) {
+                        return InkWell(
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MovieDetail(
+                                data: trendingMovies[index],
+                              ),
+                            ),
+                          ),
+                          child: trendingMoviesCard(
+                              image: trendingMovies[index]['poster_path'],
+                              title: trendingMovies[index]['title'] ??
+                                  trendingMovies[index]['name'] ??
+                                  trendingMovies[index]['original_title'] ??
+                                  trendingMovies[index]['original_name'] ??
+                                  '',
+                              ageRange: trendingMovies[index]['adult'] == false
+                                  ? "13 +"
+                                  : "18 +",
+                              movieType: 'Action',
+                              rating: trendingMovies[index]['vote_average']),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+    );
+  }
+
+  Widget trendingMoviesCard({
+    required String image,
+    title,
+    ageRange,
+    movieType,
+    rating,
+  }) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 4),
+      width: MediaQuery.of(context).size.width * .566,
+      height: MediaQuery.of(context).size.height * .255,
+      child: Column(
+        children: [
+          Container(
+            margin: const EdgeInsets.only(bottom: 8),
+            height: MediaQuery.of(context).size.height * .363,
+            width: MediaQuery.of(context).size.width * .512,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              color: Colors.white12,
+              image: DecorationImage(
+                image: NetworkImage(
+                  'https://image.tmdb.org/t/p/original/$image',
+                ),
+                fit: BoxFit.cover,
+                alignment: Alignment.center,
+              ),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+            // child: Image.asset(image),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              card(
+                cardInfo: ageRange,
+              ),
+              card(cardInfo: movieType),
+              card(
+                cardInfo: rating,
+                hasStar: true,
+              ),
+            ],
+          ),
+          SizedBox(
+            width: MediaQuery.of(context).size.width * .444,
+            child: Text(
+              title.toString(),
+              style: GoogleFonts.dmSans(
+                color: Colors.white,
+                fontWeight: FontWeight.normal,
+                fontSize: 18,
+                letterSpacing: -.2,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class MovieDetail extends StatelessWidget {
+  final data;
+  final Color primaryColor = const Color(0XFF0D0F14);
+  const MovieDetail({Key? key, this.data}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: primaryColor,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Stack(
+              children: [
+                ShaderMask(
+                  shaderCallback: (rect) {
+                    return LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: <Color>[
+                        Colors.black.withOpacity(1.0),
+                        Colors.black.withOpacity(0.8),
+                        Colors.black.withOpacity(0.4),
+                        Colors.black.withOpacity(0.0),
+                      ],
+                      stops: const [.0, .4, .8, 1.0],
+                    ).createShader(
+                      Rect.fromLTRB(
+                        0,
+                        0,
+                        rect.width,
+                        rect.height,
+                      ),
+                    );
+                  },
+                  blendMode: BlendMode.dstIn,
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: 8),
+                    height: MediaQuery.of(context).size.height * .65,
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                      color: Colors.white12,
+                      image: DecorationImage(
+                        image: NetworkImage(
+                          'https://image.tmdb.org/t/p/original/${data['poster_path']}',
+                        ),
+                        fit: BoxFit.cover,
+                        alignment: Alignment.center,
+                      ),
+                    ),
+                    // child: Image.asset(image),
+                  ),
+                ),
+                Positioned(
+                  top: 48,
+                  left: 18,
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 8,
+                        horizontal: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25),
+                        color: Colors.white12,
+                      ),
+                      child: SvgPicture.asset(
+                        'assets/svgs/arrow-left.svg',
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 24.0, right: 24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          card(
+                            cardInfo: data['adult'] == false ? "13 +" : "18 +",
+                          ),
+                          card(cardInfo: 'Action'),
+                          card(
+                            cardInfo: data['vote_average'],
+                            hasStar: true,
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          SvgPicture.asset(
+                            'assets/svgs/close-square.svg',
+                            height: 30,
+                            color: Colors.white,
+                          ),
+                          const SizedBox(width: 24),
+                          SvgPicture.asset(
+                            'assets/svgs/send-2.svg',
+                            color: Colors.white,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 8.0,
+                      top: 20,
+                      bottom: 24,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          data['title'] ??
+                              data['name'] ??
+                              data['original_title'] ??
+                              data['original_name'] ??
+                              '',
+                          style: GoogleFonts.dmSans(
+                            color: Colors.white,
+                            fontWeight: FontWeight.normal,
+                            fontSize: 24,
+                            letterSpacing: -.2,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(
+                          height: 12,
+                        ),
+                        Text(
+                          data['overview'],
+                          style: GoogleFonts.dmSans(
+                            color: Colors.white70,
+                            fontWeight: FontWeight.normal,
+                            fontSize: 16,
+                            letterSpacing: -.2,
+                            height: 1.5,
+                          ),
+                          textAlign: TextAlign.start,
+                          // maxLines: 4,
+                          // overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
+}
+
+Widget card({
+  cardInfo,
+  hasStar = false,
+}) {
+  return Container(
+    margin: const EdgeInsets.only(
+      bottom: 12,
+      left: 6,
+      right: 6,
+      top: 8,
+    ),
+    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(8),
+      color: Colors.white.withOpacity(.08),
+    ),
+    child: Row(
+      children: [
+        hasStar ? SvgPicture.asset('assets/svgs/star.svg') : const SizedBox(),
+        hasStar ? const SizedBox(width: 4) : const SizedBox(),
+        Text(
+          cardInfo.toString(),
+          style: GoogleFonts.dmSans(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.normal,
+            letterSpacing: .2,
+          ),
+        ),
+      ],
+    ),
+  );
 }
