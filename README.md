@@ -4,7 +4,9 @@ Gives users the ability to search and filter movie listings. Using https://api.t
 
 Lists the various movies, showcasing a preview image, title, date of release and a detail page that is displayed on clicking each movies
 
-## Requirements
+## Getting Started
+
+### Requirements
 
 | Name | Version |
 |------|---------|
@@ -13,7 +15,7 @@ Lists the various movies, showcasing a preview image, title, date of release and
 | <a name="requirement_random"></a> [random](#requirement\_random) | >= 2.2 |
 | <a name="requirement_time"></a> [time](#requirement\_time) | >= 0.7 |
 
-## Providers
+### Providers
 
 | Name | Version |
 |------|---------|
@@ -21,7 +23,7 @@ Lists the various movies, showcasing a preview image, title, date of release and
 | <a name="provider_random"></a> [random](#provider\_random) | >= 2.2 |
 | <a name="provider_time"></a> [time](#provider\_time) | >= 0.7 |
 
-## Modules
+### Modules
 
 | Name | Source | Version |
 |------|--------|---------|
@@ -30,7 +32,7 @@ Lists the various movies, showcasing a preview image, title, date of release and
 | <a name="module_origin_label"></a> [origin\_label](#module\_origin\_label) | cloudposse/label/null | 0.25.0 |
 | <a name="module_this"></a> [this](#module\_this) | cloudposse/label/null | 0.25.0 |
 
-## Resources
+### Resources
 
 | Name | Type |
 |------|------|
