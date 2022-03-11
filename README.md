@@ -1,6 +1,7 @@
 # movs_app
 
-Gives users the ability to search and filter movie listings. Using https://api.themoviedb.org/
+Gives users the ability to search and filter movie listings. Using https://api.themoviedb.org/. 
+
 Lists the various movies, showcasing a preview image, title, date of release and a detail page that is displayed on clicking each movies
 
 ## Requirements
