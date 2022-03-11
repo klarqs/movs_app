@@ -37,6 +37,9 @@ dependencies:
   tmdb_api: ^2.1.0
   flutter_svg:
   google_fonts:
+  sqflite: ^2.0.2
+  path_provider: ^2.0.9
+  http:
 
 dev_dependencies:
   flutter_test:
