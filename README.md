@@ -6,14 +6,16 @@ Lists the various movies, showcasing a preview image, title, date of release and
 
 ## Getting Started
 
-### Requirements
+### Dependencies
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13.0 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.64.0, < 4.0.0 |
-| <a name="requirement_random"></a> [random](#requirement\_random) | >= 2.2 |
-| <a name="requirement_time"></a> [time](#requirement\_time) | >= 0.7 |
+| <a name="cupertino_icons"></a> [terraform](#dependencies\_cupertino_icons) | >= 1.0.2 |
+| <a name="flutter_svg"></a> [aws](#dependencies\_flutter_svg)) | >= 3.64.0, < 4.0.0 |
+| <a name="google_fonts"></a> [random](#dependencies\_google_fonts) | >= 2.2 |
+| <a name="sqflite"></a> [time](#dependencies\_sqflite) | >= 0.7 |
+| <a name="path_provider"></a> [time](#dependencies\_path_provider) | >= 0.7 |
+| <a name="http"></a> [time](##dependencies\_http) | >= 0.7 |
 
 ### Providers
 
