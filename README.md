@@ -22,3 +22,19 @@ Lists the various movies, showcasing a preview image, title, date of release and
 | Name | Type |
 |------|---------|
 | <a name="api.themoviedb.org"></a> [api.themoviedb.org](#provider\_api.themoviedb.org) | service |
+
+### Installing
+
+* How/where to download your program
+* Any modifications needed to be made to files/folders
+
+## Help
+
+Any advise for common problems or issues.
+```
+command to run if program contains helper info
+```
+
+## License
+
+This project is licensed under the [NAME HERE] License - see the LICENSE.md file for details
