@@ -47,7 +47,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    // loadTrendingMovies();
     loadTrendingMoviesUsingHTTP();
     _tabController = TabController(length: 2, vsync: this);
     super.initState();
@@ -74,26 +73,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     _timer.cancel();
   }
 
-  // void loadTrendingMovies() async {
-  //   TMDB tmdb = TMDB(
-  //     ApiKeys(apiKey, accessToken),
-  //     logConfig: const ConfigLogger(
-  //       showLogs: true,
-  //       showErrorLogs: true,
-  //     ),
-  //   );
-  //   Map trendingMoviesResult = (await tmdb.v3.trending.getTrending());
-  //   Map topRatedResult = (await tmdb.v3.movies.getUpcoming());
-  //   setState(() {
-  //     trendingMovies = trendingMoviesResult['results'];
-  //     upcomingMovies = topRatedResult['results'];
-  //   });
-  //   if (kDebugMode) {
-  //     print(trendingMovies);
-  //     print(upcomingMovies);
-  //   }
-  // }
-
   void loadTrendingMoviesUsingHTTP() async {
     try {
       final trendingMoviesResponse = await get(Uri.parse(urlTrendingMovies));
@@ -106,10 +85,10 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         trendingMovies = trendingMoviesJsonData['results'];
         upcomingMovies = upcomingMoviesJsonData['results'];
       });
-      if (kDebugMode) {
-        print(trendingMovies.toString());
-        print(upcomingMovies);
-      }
+      // if (kDebugMode) {
+      //   print(trendingMovies.toString());
+      //   print(upcomingMovies);
+      // }
     } catch (err) {}
   }
 
@@ -202,6 +181,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                           // allowImplicitScrolling: true,
                           itemBuilder: (BuildContext context, int index) {
                             return InkWell(
+
                               splashColor: Colors.transparent,
                               highlightColor: Colors.transparent,
                               onTap: () => Navigator.push(

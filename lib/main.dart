@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tmdb_api/tmdb_api.dart';
 
 import 'app/modules/movies_home/views/mobile_portrait_view/movies_home_portrait_view.dart';
 
